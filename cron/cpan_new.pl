@@ -23,8 +23,7 @@ my $dat = decode_json($res->content);
 for my $dist (map { $_->{_source} } @{$dat->{hits}->{hits}}) {
     next if $dup{$dist->{name}}++;
 
-    my $msg = join(" ", $dist->{name}, $dist->{abstract}, "https://metacpan.org/release/$dist->{distribution}");
-    $msg .= "\n";
+    my $msg = sprintf("%s - %s %s\n", $dist->{name}, $dist->{abstract}, "https://metacpan.org/release/$dist->{distribution}");
     print $msg;
 
     my $res = $ua->post('http://lingr.com/api/room/say', [], [
