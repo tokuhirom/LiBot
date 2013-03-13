@@ -66,6 +66,8 @@ register_hook(qr/^perldoc\s+(.*)/ => sub {
         $ret = shorten_scalar(decode_utf8($ret), 120);
         if ($arg =~ /\A[\$\@\%]/) {
             $ret .= "\n\nhttp://perldoc.jp/perlvar";
+        } elsif ($arg =~ /\A-[a-z]\s+(.+)/) {
+            $ret .= "\n\nhttp://perldoc.jp/$1";
         } else {
             $ret .= "\n\nhttp://perldoc.jp/$arg";
         }
