@@ -6,6 +6,7 @@ use Furl;
 use URI::Escape qw(uri_escape_utf8);
 use Plack::Request;
 use JSON qw(decode_json);
+use Encode qw(encode_utf8);
 
 sub lleval {
     my $src = shift;
@@ -31,7 +32,7 @@ sub handler {
             }
         }
     }
-    return [200, ['Content-Type' => 'text/plain'], [$ret]];
+    return [200, ['Content-Type' => 'text/plain'], [encode_utf8 $ret]];
 }
 
 no warnings 'void';
