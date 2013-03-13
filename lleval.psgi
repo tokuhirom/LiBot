@@ -61,6 +61,8 @@ register_hook(qr/^perldoc\s+(.*)/ => sub {
             1 while wait == -1;
         };
         return $@ if $@;
+        $ret =~ s/NAME\n//;
+        $ret =~ s/\nDESCRIPTION\n/\n/;
         $ret = shorten_scalar(decode_utf8($ret), 120);
         if ($arg =~ /\A[\$\@\%]/) {
             $ret .= "\n\nhttp://perldoc.jp/perlvar";
