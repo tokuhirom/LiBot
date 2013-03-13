@@ -78,13 +78,16 @@ register_hook(qr/^perldoc\s+(.*)/ => sub {
         open STDOUT, '>&', $wh
           or die "failed to redirect STDOUT to logfile";
 
-        require Pod::PerldocJp;
-        local @ARGV = split /\s+/, $arg;
-        if (@ARGV == 1 && $ARGV[0] =~ /^[\$\@\%]/) {
-            unshift @ARGV, '-v';
-        }
-        unshift @ARGV, '-J';
-        Pod::PerldocJp->run();
+        eval {
+            require Pod::PerldocJp;
+            local @ARGV = split /\s+/, $arg;
+            if (@ARGV == 1 && $ARGV[0] =~ /^[\$\@\%]/) {
+                unshift @ARGV, '-v';
+            }
+            unshift @ARGV, '-J';
+            Pod::PerldocJp->run();
+        };
+        warn $@ if $@;
 
         exit 0;
     }
