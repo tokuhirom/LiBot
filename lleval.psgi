@@ -3,14 +3,14 @@ use strict;
 use warnings;
 
 use Furl;
-use URI::Escape qw(uri_escape);
+use URI::Escape qw(uri_escape_utf8);
 use Plack::Request;
 use JSON qw(decode_json);
 
 sub lleval {
     my $src = shift;
     my $ua = Furl->new(agent => 'lleval2lingr', timeout => 5);
-    my $res = $ua->get('http://api.dan.co.jp/lleval.cgi?l=pl&s=' . uri_escape($src));
+    my $res = $ua->get('http://api.dan.co.jp/lleval.cgi?l=pl&s=' . uri_escape_utf8($src));
     $res->is_success or die $res->status_line;
     print $res->content, "\n";
     return decode_json($res->content);
