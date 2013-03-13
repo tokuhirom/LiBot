@@ -6,7 +6,7 @@ use Furl;
 use URI::Escape qw(uri_escape_utf8);
 use Plack::Request;
 use JSON qw(decode_json);
-use Encode qw(encode_utf8);
+use Encode qw(encode_utf8 decode_utf8);
 
 sub lleval {
     my $src = shift;
@@ -17,22 +17,91 @@ sub lleval {
     return decode_json($res->content);
 }
 
+
+my @HANDLERS;
+sub register_hook($&) {
+    my ($re, $code) = @_;
+    push @HANDLERS, [$re, $code];
+}
+
+register_hook(qr/^!perl\s(.*)/ => sub {
+    my $res = lleval($1);
+    if (defined $res->{error}) {
+        return $res->{error};
+    } else {
+        return $res->{stdout} . $res->{stderr};
+    }
+});
+
+use Capture::Tiny qw(capture_merged);
+use Text::Shorten qw(shorten_scalar);
+
+register_hook(qr/^perldoc\s+(.*)/ => sub {
+    my ($arg) = @_;
+
+    pipe(my $rh, my $wh);
+
+    my $pid = fork();
+    $pid // do {
+        close $rh;
+        close $wh;
+        die $!;
+    };
+
+    if ($pid) {
+        # parent
+        close $wh;
+
+        local $SIG{ALRM} = sub { kill 9, $pid; waitpid($pid, 0); die "Timeout\n" };
+        my $ret = '';
+        eval {
+            alarm 3;
+            $ret .= $_ while <$rh>;
+            close $rh;
+            1 while wait == -1;
+        };
+        return $@ if $@;
+        $ret = shorten_scalar(decode_utf8($ret), 120);
+        if ($arg =~ /\A[\$\@\%]/) {
+            $ret .= "\n\nhttp://perldoc.jp/perlvar";
+        } else {
+            $ret .= "\n\nhttp://perldoc.jp/$arg";
+        }
+    } else {
+        # child
+        close $rh;
+
+        open STDERR, '>&', $wh
+          or die "failed to redirect STDERR to logfile";
+        open STDOUT, '>&', $wh
+          or die "failed to redirect STDOUT to logfile";
+
+        require Pod::PerldocJp;
+        local @ARGV = split /\s+/, $arg;
+        if (@ARGV == 1 && $ARGV[0] =~ /^[\$\@\%]/) {
+            unshift @ARGV, '-v';
+        }
+        unshift @ARGV, '-J';
+        Pod::PerldocJp->run();
+
+        exit 0;
+    }
+});
+
 sub handler {
     my $json = shift;
     my $ret = '';
     if ( $json && $json->{events} ) {
-        for my $event ( @{ $json->{events} } ) {
-            if ( $event->{message}->{text} =~ qr/^!perl\s(.*)/ ) {
-                my $res = lleval($1);
-                if (defined $res->{error}) {
-                    $ret = $res->{error};
-                } else {
-                    $ret = $res->{stdout} . $res->{stderr};
+        LOOP: for my $event ( @{ $json->{events} } ) {
+            for my $handler (@HANDLERS) {
+                if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
+                    $ret = $handler->[1]->(@matched);
+                    last LOOP;
                 }
             }
         }
     }
-    return [200, ['Content-Type' => 'text/plain'], [encode_utf8 $ret]];
+    return [200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]];
 }
 
 no warnings 'void';
