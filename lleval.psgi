@@ -7,6 +7,7 @@ use URI::Escape qw(uri_escape_utf8);
 use Plack::Request;
 use JSON qw(decode_json);
 use Encode qw(encode_utf8 decode_utf8);
+use Text::Shorten qw(shorten_scalar);
 
 sub lleval {
     my $src = shift;
@@ -27,14 +28,12 @@ sub register_hook($&) {
 register_hook(qr/^!perl\s(.*)/ => sub {
     my $res = lleval($1);
     if (defined $res->{error}) {
-        return $res->{error};
+        return shorten_scalar($res->{error}, 80);
     } else {
-        return $res->{stdout} . $res->{stderr};
+        return shorten_scalar($res->{stdout} . $res->{stderr}, 80);
     }
 });
 
-use Capture::Tiny qw(capture_merged);
-use Text::Shorten qw(shorten_scalar);
 
 register_hook(qr/^perldoc\s+(.*)/ => sub {
     my ($arg) = @_;
