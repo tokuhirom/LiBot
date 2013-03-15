@@ -2,19 +2,27 @@ package LiBot::Plugin::LLEval;
 use strict;
 use warnings;
 use utf8;
-use JSON qw(decode_json);
+use Furl;
 use URI::Escape qw(uri_escape_utf8);
+use JSON qw(decode_json);
 use Text::Shorten qw(shorten_scalar);
 
-sub new {
-    my ($class, %args) = @_;
-    bless \%args, $class;
+use Mouse;
+
+no Mouse;
+
+sub lleval {
+    my $src = shift;
+    my $ua = Furl->new(agent => 'lleval2lingr', timeout => 5);
+    my $res = $ua->get('http://api.dan.co.jp/lleval.cgi?l=pl&s=' . uri_escape_utf8($src));
+    $res->is_success or die $res->status_line;
+    print $res->content, "\n";
+    return decode_json($res->content);
 }
 
 sub init {
     my ($self, $bot) = @_;
 
-    print "Registering lleval bot\n";
     $bot->register(
         qr/^!\s*(.*)/ => sub {
             my ( $cb, $event, $code ) = @_;
@@ -31,16 +39,6 @@ sub init {
             }
         }
     );
-}
-
-sub lleval {
-    my $src = shift;
-    my $ua = Furl->new(agent => 'lleval2lingr', timeout => 5);
-    $ua->env_proxy;
-    my $res = $ua->get('http://api.dan.co.jp/lleval.cgi?l=pl&s=' . uri_escape_utf8($src));
-    $res->is_success or die $res->status_line;
-    print $res->content, "\n";
-    return decode_json($res->content);
 }
 
 1;

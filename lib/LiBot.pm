@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use utf8;
 
+our $VERSION = '0.0.1';
+
 use Plack::Request;
 use JSON qw(decode_json);
 use Encode qw(encode_utf8 decode_utf8);
