@@ -82,7 +82,6 @@ sub to_app {
 
 sub run {
     my $self = shift;
-    warn @_;
     my $server = Twiggy::Server->new(@_);
     $server->register_service(builder {
         enable 'AccessLog';
