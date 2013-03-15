@@ -3,5 +3,7 @@
         Karma => {
             path => 'karma.db',
         },
+        LLEval => {
+        },
     ],
 };
