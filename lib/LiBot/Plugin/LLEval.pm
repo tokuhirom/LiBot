@@ -28,7 +28,7 @@ sub init {
             my ( $cb, $event, $code ) = @_;
 
             my $lang = 'pl';
-            if ($code =~ /^!\s*([a-z]+)\s*(.+)/) {
+            if ($code =~ /^!\s*([a-z0-9]+)\s*(.+)/) {
                 $lang = $1;
                 $code = $2;
             } else {
