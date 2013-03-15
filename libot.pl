@@ -5,8 +5,6 @@ use warnings;
 use lib 'lib';
 use LiBot;
 use Furl;
-use URI::Escape qw(uri_escape_utf8);
-use JSON qw(decode_json);
 use Encode qw(decode_utf8 encode_utf8);
 use Text::Shorten qw(shorten_scalar);
 use Getopt::Long;
@@ -43,22 +41,6 @@ sub setup_bot {
             $bot->load_plugin($module, $config);
         }
     }
-    $bot->register(
-        qr/^!\s*(.*)/ => sub {
-            my ( $cb, $event, $code ) = @_;
-
-            unless ( $code =~ m{^(print|say)} ) {
-                $code = "print sub { ${code} }->()";
-            }
-            my $res = lleval($code);
-            if ( defined $res->{error} ) {
-                $cb->( shorten_scalar( $res->{error}, 80 ) );
-            }
-            else {
-                $cb->( shorten_scalar( $res->{stdout} . $res->{stderr}, 80 ) );
-            }
-        }
-    );
     $bot->register(
         qr/^perldoc\s+(.*)/ => sub {
             my ( $cb, $event, $arg ) = @_;
@@ -191,13 +173,4 @@ sub setup_irc {
     });
     $irc->connect('chat.freenode.net', 6667, {nick => 'perl_lingr_bot'});
     return $irc;
-}
-
-sub lleval {
-    my $src = shift;
-    my $ua = Furl->new(agent => 'lleval2lingr', timeout => 5);
-    my $res = $ua->get('http://api.dan.co.jp/lleval.cgi?l=pl&s=' . uri_escape_utf8($src));
-    $res->is_success or die $res->status_line;
-    print $res->content, "\n";
-    return decode_json($res->content);
 }
