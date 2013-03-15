@@ -25,8 +25,12 @@ sub register_hook($&) {
     push @HANDLERS, [$re, $code];
 }
 
-register_hook(qr/^!perl\s(.*)/ => sub {
-    my $res = lleval($1);
+register_hook(qr/^!\s*(.*)/ => sub {
+    my $code = $1;
+    unless ($code =~ m{^(print|say)}) {
+        $code = "print sub { ${code} }->()";
+    }
+    my $res = lleval($code);
     if (defined $res->{error}) {
         return shorten_scalar($res->{error}, 80);
     } else {
@@ -107,6 +111,7 @@ sub handler {
             }
         }
     }
+    $ret =~ s!\n+$!!;
     return [200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]];
 }
 
