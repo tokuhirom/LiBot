@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use lib 'lib';
-use WebService::Lingr::Bot;
+use LiBot;
 use Furl;
 use URI::Escape qw(uri_escape_utf8);
 use JSON qw(decode_json);
@@ -13,14 +13,15 @@ use Getopt::Long;
 use AE;
 use AnyEvent::IRC::Client;
 use GDBM_File;
+use Data::OptList;
 
 my $host = '127.0.0.1';
 my $port = 6000;
-my $karma_dict_path = 'karma.db';
+my $config_file = 'config.pl';
 GetOptions(
     'host=s' => \$host,
     'port=s' => \$port,
-    'karma-dict=s' => \$karma_dict_path,
+    'c=s' => \$config_file,
 ) or die;
 
 my $irc = setup_irc();
@@ -31,7 +32,17 @@ print "http://$host:$port/\n";
 AE::cv->recv;
 
 sub setup_bot {
-    my $bot = WebService::Lingr::Bot->new();
+    my $bot = LiBot->new();
+    {
+        my $config = do $config_file or die "Cannot load $config_file";
+        for my $plugin (@{Data::OptList::mkopt($config->{plugins})}) {
+            my $module = $plugin->[0];
+            my $config = $plugin->[1];
+
+            print "Loading $module\n";
+            $bot->load_plugin($module, $config);
+        }
+    }
     $bot->register(
         qr/^!\s*(.*)/ => sub {
             my ( $cb, $event, $code ) = @_;
@@ -126,15 +137,6 @@ sub setup_bot {
 
                 exit 0;
             }
-        }
-    );
-    tie my %karma_dict, 'GDBM_File', $karma_dict_path, &GDBM_WRCREAT, 0640;
-    $bot->register(
-        qr/(\w+)(\+\+|--)/ => sub {
-            my ($cb, $event, $name, $op) = @_;
-            $karma_dict{$name} += 1 if $op eq '++';
-            $karma_dict{$name} -= 1 if $op eq '--';
-            $cb->("$name: $karma_dict{$name}");
         }
     );
     $bot->register(

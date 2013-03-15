@@ -1,4 +1,4 @@
-package WebService::Lingr::Bot;
+package LiBot;
 use strict;
 use warnings;
 use utf8;
@@ -8,6 +8,7 @@ use JSON qw(decode_json);
 use Encode qw(encode_utf8 decode_utf8);
 use Twiggy::Server;
 use Plack::Builder;
+use Module::Runtime;
 
 sub new {
     my $class = shift;
@@ -35,7 +36,11 @@ sub handle_request {
             for my $event ( @{ $json->{events} } ) {
                 for my $handler (@{$self->{handlers}}) {
                     if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                        $handler->[1]->($cb, $event, @matched);
+                        eval {
+                            $handler->[1]->($cb, $event, @matched);
+                        };
+                        print STDERR $@ if $@;
+                        die $@ if $@;
                         return;
                     }
                 }
@@ -45,6 +50,15 @@ sub handle_request {
         # Not proceeeded.
         $respond->([200, ['Content-Type' => 'text/plain'], ['']]);
     };
+}
+
+sub load_plugin {
+    my ($self, $name, $args) = @_;
+
+    my $klass = $name =~ s!^\+!! ? $name : "LiBot::Plugin::$name";
+    Module::Runtime::require_module($klass);
+    my $obj = $klass->new($args);
+    $obj->init($self);
 }
 
 sub to_app {
