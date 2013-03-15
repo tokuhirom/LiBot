@@ -1,6 +1,5 @@
 lingr-bots
 ==========
 
-lingr でうごくボットつめあわせ
+Bot for `http://lingr.com/room/perl_jp`
 
- * lleval.psgi - lleval になげるだけです
