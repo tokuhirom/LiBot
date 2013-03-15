@@ -42,16 +42,15 @@ sub handle_request {
 sub to_app {
     my $self = shift;
 
-    warn "TO APP";
     sub {
-        warn "APP";
         my $req = Plack::Request->new(shift);
 
         if ($req->method eq 'POST') {
             my $json = decode_json($req->content);
             return $self->handle_request($json);
         } else {
-            # とくによばれない
+            # lingr server always calls me by POST method.
+            # This is human's health check page.
             return [200, ['Content-Type' => 'text/plain'], ["I'm lingr bot"]];
         }
     };
