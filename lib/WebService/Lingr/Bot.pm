@@ -82,8 +82,8 @@ __END__
 
     my $bot = WebService::Lingr::Bot->new();
     $bot->register(qr/^!\s*(.*)/ => sub {
-        my ($event, $msg) = @_;
-        uc($msg);
+        my ($cb, $event, $msg) = @_;
+        $cb->(uc($msg));
     });
     $bot->run(host => '127.0.0.1', port => 5963);
 
