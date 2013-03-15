@@ -30,6 +30,8 @@ sub lleval {
 
 my $bot = WebService::Lingr::Bot->new();
 $bot->register(qr/^!\s*(.*)/ => sub {
+    my $event = shift;
+
     my $code = $1;
     unless ($code =~ m{^(print|say)}) {
         $code = "print sub { ${code} }->()";
@@ -42,7 +44,7 @@ $bot->register(qr/^!\s*(.*)/ => sub {
     }
 });
 $bot->register(qr/^perldoc\s+(.*)/ => sub {
-    my ($arg) = @_;
+    my ($event, $arg) = @_;
 
     pipe(my $rh, my $wh);
 

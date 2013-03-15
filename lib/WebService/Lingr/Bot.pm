@@ -29,7 +29,7 @@ sub handle_request {
         LOOP: for my $event ( @{ $json->{events} } ) {
             for my $handler (@{$self->{handlers}}) {
                 if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                    $ret = $handler->[1]->(@matched);
+                    $ret = $handler->[1]->($event, @matched);
                     last LOOP;
                 }
             }
@@ -68,4 +68,14 @@ sub run {
 }
 
 1;
+__END__
+
+=head1 SYNOPSIS
+
+    my $bot = WebService::Lingr::Bot->new();
+    $bot->register(qr/^!\s*(.*)/ => sub {
+        my ($event, $msg) = @_;
+        uc($msg);
+    });
+    $bot->run(host => '127.0.0.1', port => 5963);
 
