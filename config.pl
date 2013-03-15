@@ -15,5 +15,6 @@
             channel => '#hiratara',
         },
         'PerldocJP',
+        'URLFetcher',
     ],
 };
