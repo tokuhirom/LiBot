@@ -5,7 +5,7 @@
             port => 1199,
         },
     ],
-    'plugins' => [
+    'handlers' => [
         Karma => {
             path => 'karma.db',
         },

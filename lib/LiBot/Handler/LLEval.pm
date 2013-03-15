@@ -1,4 +1,4 @@
-package LiBot::Plugin::LLEval;
+package LiBot::Handler::LLEval;
 use strict;
 use warnings;
 use utf8;

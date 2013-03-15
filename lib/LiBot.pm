@@ -67,14 +67,3 @@ sub run {
 }
 
 1;
-__END__
-
-=head1 SYNOPSIS
-
-    my $bot = WebService::Lingr::Bot->new();
-    $bot->register(qr/^!\s*(.*)/ => sub {
-        my ($cb, $event, $msg) = @_;
-        $cb->(uc($msg));
-    });
-    $bot->run(host => '127.0.0.1', port => 5963);
-

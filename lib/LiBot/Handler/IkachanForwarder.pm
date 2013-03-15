@@ -1,4 +1,4 @@
-package LiBot::Plugin::IkachanForwarder;
+package LiBot::Handler::IkachanForwarder;
 use strict;
 use warnings;
 use utf8;

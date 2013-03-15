@@ -1,4 +1,4 @@
-package LiBot::Plugin::PerldocJP;
+package LiBot::Handler::PerldocJP;
 use strict;
 use warnings;
 use utf8;

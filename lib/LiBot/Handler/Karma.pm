@@ -1,4 +1,4 @@
-package LiBot::Plugin::Karma;
+package LiBot::Handler::Karma;
 use strict;
 use warnings;
 use utf8;

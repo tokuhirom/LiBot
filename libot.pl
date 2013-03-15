@@ -4,12 +4,8 @@ use warnings;
 
 use lib 'lib';
 use LiBot;
-use Furl;
-use Encode qw(decode_utf8 encode_utf8);
-use Text::Shorten qw(shorten_scalar);
 use Getopt::Long;
 use AE;
-use GDBM_File;
 use Data::OptList;
 
 my $config_file = 'config.pl';
@@ -33,8 +29,8 @@ sub setup_bot {
     }
 
     # load handlers
-    for (@{Data::OptList::mkopt($config->{plugins})}) {
-        $bot->load_plugin('Plugin', $_->[0], $_->[1]);
+    for (@{Data::OptList::mkopt($config->{handlers})}) {
+        $bot->load_plugin('Handler', $_->[0], $_->[1]);
     }
 
     $bot;
