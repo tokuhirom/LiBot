@@ -30,21 +30,20 @@ sub lleval {
 
 my $bot = WebService::Lingr::Bot->new();
 $bot->register(qr/^!\s*(.*)/ => sub {
-    my $event = shift;
+    my ($cb, $event, $code) = @_;
 
-    my $code = $1;
     unless ($code =~ m{^(print|say)}) {
         $code = "print sub { ${code} }->()";
     }
     my $res = lleval($code);
     if (defined $res->{error}) {
-        return shorten_scalar($res->{error}, 80);
+        $cb->(shorten_scalar($res->{error}, 80));
     } else {
-        return shorten_scalar($res->{stdout} . $res->{stderr}, 80);
+        $cb->(shorten_scalar($res->{stdout} . $res->{stderr}, 80));
     }
 });
 $bot->register(qr/^perldoc\s+(.*)/ => sub {
-    my ($event, $arg) = @_;
+    my ($cb, $event, $arg) = @_;
 
     pipe(my $rh, my $wh);
 
@@ -59,27 +58,30 @@ $bot->register(qr/^perldoc\s+(.*)/ => sub {
         # parent
         close $wh;
 
-        local $SIG{ALRM} = sub { kill 9, $pid; waitpid($pid, 0); die "Timeout\n" };
         my $ret = '';
-        eval {
-            alarm 3;
-            $ret .= $_ while <$rh>;
-            close $rh;
-            1 while wait == -1;
-            alarm 0;
-        };
-
-        return $@ if $@;
-        $ret =~ s/NAME\n//;
-        $ret =~ s/\nDESCRIPTION\n/\n/;
-        $ret = shorten_scalar(decode_utf8($ret), 120);
-        if ($arg =~ /\A[\$\@\%]/) {
-            $ret .= "\n\nhttp://perldoc.jp/perlvar";
-        } elsif ($arg =~ /\A-[a-z]\s+(.+)/) {
-            $ret .= "\n\nhttp://perldoc.jp/$1";
-        } else {
-            $ret .= "\n\nhttp://perldoc.jp/$arg";
-        }
+        my $sweep;
+        my $timer = AE::timer(10, 0, sub {
+            kill 9, $pid;
+        });
+        my $child; $child = AE::child($pid, sub {
+            undef $timer;
+            $ret =~ s/NAME\n//;
+            $ret =~ s/\nDESCRIPTION\n/\n/;
+            $ret = shorten_scalar(decode_utf8($ret), 120);
+            if ($arg =~ /\A[\$\@\%]/) {
+                $ret .= "\n\nhttp://perldoc.jp/perlvar";
+            } elsif ($arg =~ /\A-[a-z]\s+(.+)/) {
+                $ret .= "\n\nhttp://perldoc.jp/$1";
+            } else {
+                $ret .= "\n\nhttp://perldoc.jp/$arg";
+            }
+            $cb->($ret);
+            undef $sweep;
+            undef $child;
+        });
+        $sweep = AE::io($rh, 0, sub {
+            $ret .= scalar(<$rh>);
+        });
     } else {
         # child
         close $rh;
@@ -104,5 +106,6 @@ $bot->register(qr/^perldoc\s+(.*)/ => sub {
     }
 });
 my $server = $bot->run(host => $host, port => $port);
+print "http://$host:$port/\n";
 AE::cv->recv;
 

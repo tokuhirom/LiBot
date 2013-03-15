@@ -24,19 +24,27 @@ sub register {
 sub handle_request {
     my ($self, $json) = @_;
 
-    my $ret = '';
-    if ( $json && $json->{events} ) {
-        LOOP: for my $event ( @{ $json->{events} } ) {
-            for my $handler (@{$self->{handlers}}) {
-                if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                    $ret = $handler->[1]->($event, @matched);
-                    last LOOP;
+    return sub {
+        my $respond = shift;
+        my $cb = sub {
+            my $ret = shift;
+            $ret =~ s!\n+$!!;
+            $respond->([200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]]);
+        };
+        if ( $json && $json->{events} ) {
+            for my $event ( @{ $json->{events} } ) {
+                for my $handler (@{$self->{handlers}}) {
+                    if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
+                        $handler->[1]->($cb, $event, @matched);
+                        return;
+                    }
                 }
             }
         }
-    }
-    $ret =~ s!\n+$!!;
-    return [200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]];
+
+        # Not proceeeded.
+        $respond->([200, ['Content-Type' => 'text/plain'], ['']]);
+    };
 }
 
 sub to_app {

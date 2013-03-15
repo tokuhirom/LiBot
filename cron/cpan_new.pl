@@ -14,7 +14,10 @@ my $secret = shift;
 
 my $dup_path = '/tmp/dup-cpan-new-lignr.gdbm';
 
-tie my %dup, 'GDBM_File', $dup_path, &GDBM_WRCREAT, 0640;
+my %dup;
+unless ($ENV{DEBUG}) {
+    tie %dup, 'GDBM_File', $dup_path, &GDBM_WRCREAT, 0640;
+}
 
 my $ua = Furl->new(agent => $0, timeout => 10);
 my $res = $ua->get('http://api.metacpan.org/release/_search?sort=date:desc&size=5');
@@ -23,17 +26,19 @@ my $dat = decode_json($res->content);
 for my $dist (map { $_->{_source} } @{$dat->{hits}->{hits}}) {
     next if $dup{$dist->{name}}++;
 
-    my $msg = sprintf("%s - %s %s\n", $dist->{name}, $dist->{abstract}, "https://metacpan.org/release/$dist->{distribution}");
+    my $msg = sprintf("%s - %s %s\n", $dist->{name}, $dist->{abstract}, "https://metacpan.org/release/$dist->{author}/$dist->{name}/");
     print $msg;
 
-    my $res = $ua->post('http://lingr.com/api/room/say', [], [
-        room => 'perl_jp',
-        bot  => 'perl',
-        bot_verifier => sha1_hex('perl' . $secret),
-        text => encode_utf8($msg),
-    ]);
-    print $res->status_line . "\n";
-    print "\n";
-    print $res->content . "\n";
+    unless ($ENV{DEBUG}) {
+        my $res = $ua->post('http://lingr.com/api/room/say', [], [
+            room => 'perl_jp',
+            bot  => 'perl',
+            bot_verifier => sha1_hex('perl' . $secret),
+            text => encode_utf8($msg),
+        ]);
+        print $res->status_line . "\n";
+        print "\n";
+        print $res->content . "\n";
+    }
 }
 
