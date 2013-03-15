@@ -38,9 +38,9 @@ sub init {
             my ( $cb, $event, $arg ) = @_;
 
             print "Send mention\n";
-            my $nickname = $event->{message}->{nickname};
+            my $nickname = $event->nickname;
             substr($nickname, 1, 1) = '*'; # do not highlight me.
-            my $msg = sprintf("(%s) %s", $nickname, $event->{message}->{text});
+            my $msg = sprintf("(%s) %s", $nickname, $event->text);
             my $url = $self->url;
             $url =~ s!/$!!;
             $url .= sprintf("/privmsg?channel=%s&message=%s", uri_escape_utf8($self->channel), uri_escape_utf8($msg));

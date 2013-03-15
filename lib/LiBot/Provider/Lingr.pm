@@ -23,10 +23,7 @@ use Encode qw(encode_utf8 decode_utf8);
 use Twiggy::Server;
 use Plack::Builder;
 use Module::Runtime;
-
-sub init {
-    my ($self, $bot) = @_;
-}
+use LiBot::Message;
 
 sub handle_request {
     my ($self, $bot, $json) = @_;
@@ -43,7 +40,11 @@ sub handle_request {
                 for my $handler (@{$bot->{handlers}}) {
                     if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
                         eval {
-                            $handler->[1]->($cb, $event, @matched);
+                            my $msg = LiBot::Message->new(
+                                text     => $event->{message}->{text},
+                                nickname => $event->{message}->{nickname},
+                            );
+                            $handler->[1]->($cb, $msg, @matched);
                         };
                         print STDERR $@ if $@;
                         die $@ if $@;
