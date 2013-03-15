@@ -5,89 +5,65 @@ use utf8;
 
 our $VERSION = '0.0.1';
 
-use Plack::Request;
-use JSON qw(decode_json);
-use Encode qw(encode_utf8 decode_utf8);
-use Twiggy::Server;
-use Plack::Builder;
-use Module::Runtime;
+use Log::Pony;
 
-sub new {
-    my $class = shift;
-    bless {
-        handlers => [],
-    }, $class;
-}
+use Mouse;
+
+has providers => (
+    is => 'ro',
+    default => sub { [] },
+);
+
+has handlers => (
+    is => 'ro',
+    default => sub { +[ ] },
+);
+
+has log_level => (
+    is => 'ro',
+    default => 'info',
+);
+
+has log => (
+    is => 'ro',
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+        Log::Pony->new(log_level => $self->log_level)
+    },
+);
+
+no Mouse;
+
+use Module::Runtime;
 
 sub register {
     my ($self, $re, $code) = @_;
     push @{$self->{handlers}}, [$re, $code];
 }
 
-sub handle_request {
-    my ($self, $json) = @_;
-
-    return sub {
-        my $respond = shift;
-        my $cb = sub {
-            my $ret = shift;
-            $ret =~ s!\n+$!!;
-            $respond->([200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]]);
-        };
-        if ( $json && $json->{events} ) {
-            for my $event ( @{ $json->{events} } ) {
-                for my $handler (@{$self->{handlers}}) {
-                    if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                        eval {
-                            $handler->[1]->($cb, $event, @matched);
-                        };
-                        print STDERR $@ if $@;
-                        die $@ if $@;
-                        return;
-                    }
-                }
-            }
-        }
-
-        # Not proceeeded.
-        $respond->([200, ['Content-Type' => 'text/plain'], ['']]);
-    };
+sub load_provider {
+    my ($self, $name, $args) = @_;
+    push @{$self->{providers}}, $self->load_plugin('Provider', $name, $args);
 }
 
 sub load_plugin {
-    my ($self, $name, $args) = @_;
+    my ($self, $prefix, $name, $args) = @_;
 
-    my $klass = $name =~ s!^\+!! ? $name : "LiBot::Plugin::$name";
+    my $klass = $name =~ s!^\+!! ? $name : "LiBot::${prefix}::$name";
     Module::Runtime::require_module($klass);
-    my $obj = $klass->new($args);
-    $obj->init($self);
-}
-
-sub to_app {
-    my $self = shift;
-
-    sub {
-        my $req = Plack::Request->new(shift);
-
-        if ($req->method eq 'POST') {
-            my $json = decode_json($req->content);
-            return $self->handle_request($json);
-        } else {
-            # lingr server always calls me by POST method.
-            # This is human's health check page.
-            return [200, ['Content-Type' => 'text/plain'], ["I'm lingr bot"]];
-        }
-    };
+    $self->log->info("Loading $klass");
+    my $obj = $klass->new($args || +{});
+    $obj->init($self) if $obj->can('init');
+    $obj;
 }
 
 sub run {
     my $self = shift;
-    my $server = Twiggy::Server->new(@_);
-    $server->register_service(builder {
-        enable 'AccessLog';
-        $self->to_app
-    });
-    return $server;
+
+    for my $provider (@{$self->providers}) {
+        $provider->run($self);
+    }
 }
 
 1;
