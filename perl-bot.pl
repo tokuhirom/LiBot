@@ -66,7 +66,9 @@ $bot->register(qr/^perldoc\s+(.*)/ => sub {
             $ret .= $_ while <$rh>;
             close $rh;
             1 while wait == -1;
+            alarm 0;
         };
+
         return $@ if $@;
         $ret =~ s/NAME\n//;
         $ret =~ s/\nDESCRIPTION\n/\n/;
