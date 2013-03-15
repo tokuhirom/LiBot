@@ -2,12 +2,22 @@
 use strict;
 use warnings;
 
+use lib 'lib';
+use WebService::Lingr::Bot;
 use Furl;
 use URI::Escape qw(uri_escape_utf8);
-use Plack::Request;
 use JSON qw(decode_json);
-use Encode qw(encode_utf8 decode_utf8);
+use Encode qw(decode_utf8);
 use Text::Shorten qw(shorten_scalar);
+use Getopt::Long;
+use AE;
+
+my $host = '127.0.0.1';
+my $port = 6000;
+GetOptions(
+    'host=s' => \$host,
+    'port=s' => \$port,
+) or die;
 
 sub lleval {
     my $src = shift;
@@ -18,14 +28,8 @@ sub lleval {
     return decode_json($res->content);
 }
 
-
-my @HANDLERS;
-sub register_hook($&) {
-    my ($re, $code) = @_;
-    push @HANDLERS, [$re, $code];
-}
-
-register_hook(qr/^!\s*(.*)/ => sub {
+my $bot = WebService::Lingr::Bot->new();
+$bot->register(qr/^!\s*(.*)/ => sub {
     my $code = $1;
     unless ($code =~ m{^(print|say)}) {
         $code = "print sub { ${code} }->()";
@@ -37,9 +41,7 @@ register_hook(qr/^!\s*(.*)/ => sub {
         return shorten_scalar($res->{stdout} . $res->{stderr}, 80);
     }
 });
-
-
-register_hook(qr/^perldoc\s+(.*)/ => sub {
+$bot->register(qr/^perldoc\s+(.*)/ => sub {
     my ($arg) = @_;
 
     pipe(my $rh, my $wh);
@@ -97,33 +99,6 @@ register_hook(qr/^perldoc\s+(.*)/ => sub {
         exit 0;
     }
 });
+my $server = $bot->run(host => $host, port => $port);
+AE::cv->recv;
 
-sub handler {
-    my $json = shift;
-    my $ret = '';
-    if ( $json && $json->{events} ) {
-        LOOP: for my $event ( @{ $json->{events} } ) {
-            for my $handler (@HANDLERS) {
-                if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                    $ret = $handler->[1]->(@matched);
-                    last LOOP;
-                }
-            }
-        }
-    }
-    $ret =~ s!\n+$!!;
-    return [200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]];
-}
-
-no warnings 'void';
-sub {
-    my $req = Plack::Request->new(shift);
-
-    if ($req->method eq 'POST') {
-        my $json = decode_json($req->content);
-        return handler($json);
-    } else {
-        # とくによばれない
-        return [200, ['Content-Type' => 'text/plain'], ["I'm lleval2lingr bot"]];
-    }
-};
