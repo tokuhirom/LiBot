@@ -24,7 +24,7 @@ sub init {
     my ($self, $bot) = @_;
 
     $bot->register(
-        qr/^!\s*(.*)/ => sub {
+        qr/^!\s*(.*)/s => sub {
             my ( $cb, $event, $code ) = @_;
 
             my $lang = 'pl';
