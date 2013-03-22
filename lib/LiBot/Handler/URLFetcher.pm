@@ -5,6 +5,7 @@ use utf8;
 
 use LWP::UserAgent;
 use HTTP::Response::Encoding;
+use HTML::Entities;
 use Encode;
 use Furl;
 use Text::Shorten qw(shorten_scalar);
@@ -42,7 +43,8 @@ sub init {
             my $res = $self->ua->get($url);
                $res = $res->as_http_response;
             if ($res->content =~ m{<title>\s*(.*?)\s*</title>}smi) {
-                $cb->($self->prefix() . shorten_scalar($res->encoder->decode($1), 120));
+                my $title = decode_entities($res->encoder->decode($1));
+                $cb->($self->prefix() . shorten_scalar($title, 120));
             } else {
                 $cb->('');
             }
