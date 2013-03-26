@@ -1,0 +1,49 @@
+{
+   "abstract" : "The bot framework",
+   "author" : [
+      "Tokuhiro Matsuno < tokuhirom @ gmail.com >"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Minilla/v0.0.49, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "LiBot",
+   "prereqs" : {
+      "runtime" : {
+         "requires" : {
+            "Data::OptList" : "0",
+            "GDBM_File" : "0",
+            "HTML::Entities" : "0",
+            "HTTP::Response::Encoding" : "0",
+            "JSON" : "0",
+            "Log::Pony" : "0",
+            "Mouse" : "0",
+            "Pod::PerldocJp" : "0",
+            "Text::Shorten" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::AllModules" : "0"
+         }
+      }
+   },
+   "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/tokuhirom/LiBot/issues"
+      },
+      "homepage" : "https://github.com/tokuhirom/LiBot",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tokuhirom/LiBot.git",
+         "web" : "https://github.com/tokuhirom/LiBot"
+      }
+   },
+   "version" : "0.0.1"
+}

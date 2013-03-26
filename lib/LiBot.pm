@@ -67,3 +67,25 @@ sub run {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot - The bot framework
+
+=head1 DESCRIPTION
+
+This is yet another bot framework.
+
+=head1 AUTHOR
+
+Tokuhiro Matsuno E<lt> tokuhirom @ gmail.com E<gt>
+
+=head1 LICENSE
+
+Copyright (C) Tokuhiro Matsuno
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
