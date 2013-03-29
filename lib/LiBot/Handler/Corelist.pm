@@ -26,4 +26,21 @@ sub _handler {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Handler::Corelist - Module::CoreList plugin
+
+=head1 SYNOPSIS
+
+    # In the chat
+    <tokuhirom> corelist Test::More
+    >bot< Test::More was first released with perl 5.006002
+    <tokuhirom> corelist Acme::PrettyCure
+    >bot< Acme::PrettyCure was not in CORE (or so I think)
+
+=head1 DESCRIPTION
+
+This plugin provides a 'corelist' command for the LiBot.
 
