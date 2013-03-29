@@ -3,10 +3,12 @@ requires 'Text::Shorten';
 requires 'JSON';
 requires 'Data::OptList';
 requires 'Mouse';
-requires 'GDBM_File';
 requires 'Log::Pony';
 requires 'HTTP::Response::Encoding';
 requires 'HTML::Entities';
+
+# Handler::Karma
+requires 'DB_File';
 
 on 'test' => sub {
     requires 'Test::AllModules';

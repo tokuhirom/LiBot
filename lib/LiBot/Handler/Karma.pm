@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use Mouse;
-use GDBM_File;
+use DB_File;
 
 has path => (
     is => 'ro',
@@ -17,7 +17,7 @@ has dict => (
     lazy => 1,
     default => sub {
         my $self = shift;
-        tie my %karma_dict, 'GDBM_File', $self->path, &GDBM_WRCREAT, 0640;
+        tie my %karma_dict, 'DB_File', $self->path;
         \%karma_dict;
     },
 );
