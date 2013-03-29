@@ -37,17 +37,18 @@ sub handle_request {
         };
         if ( $json && $json->{events} ) {
             for my $event ( @{ $json->{events} } ) {
-                for my $handler (@{$bot->{handlers}}) {
-                    if (my @matched = ($event->{message}->{text} =~ $handler->[0])) {
-                        eval {
-                            my $msg = LiBot::Message->new(
-                                text     => $event->{message}->{text},
-                                nickname => $event->{message}->{nickname},
-                            );
-                            $handler->[1]->($cb, $msg, @matched);
-                        };
-                        print STDERR $@ if $@;
-                        die $@ if $@;
+                my $msg = LiBot::Message->new(
+                    text     => $event->{message}->{text},
+                    nickname => $event->{message}->{nickname},
+                );
+                my $proceeded = eval {
+                    $bot->handle_message($msg)
+                };
+                if ($@) {
+                    print STDERR $@;
+                    die $@;
+                } else {
+                    if ($proceeded) {
                         return;
                     }
                 }
