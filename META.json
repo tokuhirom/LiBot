@@ -31,6 +31,7 @@
       },
       "runtime" : {
          "requires" : {
+            "AnyEvent::IRC::Client" : "0",
             "DB_File" : "0",
             "Data::OptList" : "0",
             "HTML::Entities" : "0",
