@@ -16,5 +16,6 @@
         },
         'PerldocJP',
         'URLFetcher',
+        'CoreList',
     ],
 };

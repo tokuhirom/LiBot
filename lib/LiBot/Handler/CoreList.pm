@@ -1,4 +1,4 @@
-package LiBot::Handler::Corelist;
+package LiBot::Handler::CoreList;
 use strict;
 use warnings;
 use utf8;
