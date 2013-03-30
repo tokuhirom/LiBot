@@ -7,6 +7,11 @@ use Text::Shorten qw(shorten_scalar);
 
 use Mouse;
 
+has limit => (
+    is => 'ro',
+    default => sub { 120 },
+);
+
 no Mouse;
 
 sub init {
@@ -45,7 +50,7 @@ sub init {
                         undef $timer;
                         $ret =~ s/NAME\n//;
                         $ret =~ s/\nDESCRIPTION\n/\n/;
-                        $ret = shorten_scalar( decode_utf8($ret), 120 );
+                        $ret = shorten_scalar( decode_utf8($ret), $self->limit );
                         if ( $arg =~ /\A[\$\@\%]/ ) {
                             $ret .= "\n\nhttp://perldoc.jp/perlvar";
                         }
@@ -126,5 +131,11 @@ This bot tell me a link for perldoc.jp.
 
 =head1 CONFIGURATION
 
-There is no configuration parameters.
+=over 4
+
+=item limit
+
+Limit length of pod
+
+=back
 
