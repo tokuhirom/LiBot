@@ -2,6 +2,8 @@ package LiBot::Provider::IRC;
 use strict;
 use warnings;
 use utf8;
+use AnyEvent::IRC::Client;
+use Encode qw(decode encode);
 
 use Mouse;
 
@@ -19,17 +21,22 @@ has nick => (
     default => sub { 'libot' },
 );
 
+has encoding => (
+    is => 'ro',
+    default => sub { 'utf-8' },
+);
+
 has channels => (
     is => 'rw',
 );
 
 no Mouse;
 
-sub run {
+sub _connect {
     my ($self, $bot) = @_;
 
     my $irc = AnyEvent::IRC::Client->new;
-    $con->reg_cb(
+    $irc->reg_cb(
         connect => sub {
             my ( $con, $err ) = @_;
             if ( defined $err ) {
@@ -41,14 +48,15 @@ sub run {
             }
         }
     );
-    $con->reg_cb( registered => sub { print "I'm in!\n"; } );
-    $con->reg_cb( disconnect => sub { print "I'm out!\n"; } );
+    $irc->reg_cb( registered => sub { print "I'm in!\n"; } );
+    $irc->reg_cb( disconnect => sub {
+        print "I'm out!\n";
+        $self->_connect($bot);
+    } );
     $irc->reg_cb(
         publicmsg => sub {
             my ( $irc, $channel, $msg ) = @_;
-            use Data::Dumper;
-            warn Dumper($msg);
-            my $text = decode_utf8( $msg->{params}->[1] );
+            my $text = decode( $self->encoding, $msg->{params}->[1] );
             my ( $nickname, ) = split '!', ( $msg->{prefix} || '' );
             my $msg = LiBot::Message->new(
                 text     => $text,
@@ -57,7 +65,10 @@ sub run {
             my $proceeded = eval {
                 $bot->handle_message(
                     sub {
-                        $irc->send_chan( $channel, "NOTICE", $channel, $_[0] );
+                        warn $_[0];
+                        for (grep /\S/, split /\n/, $_[0]) {
+                            $irc->send_chan( $channel, "NOTICE", $channel, encode($self->encoding, $_) );
+                        }
                     },
                     $msg
                 );
@@ -76,6 +87,11 @@ sub run {
     $irc->connect( $self->host, $self->port, { nick => $self->nick } );
     $irc->enable_ping(10);
     $self->irc($irc);
+}
+
+sub run {
+    my ($self, $bot) = @_;
+    $self->_connect($bot);
 }
 
 1;

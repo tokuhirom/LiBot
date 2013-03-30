@@ -6,6 +6,7 @@ requires 'Mouse';
 requires 'Log::Pony';
 requires 'HTTP::Response::Encoding';
 requires 'HTML::Entities';
+requires 'AnyEvent::IRC::Client';
 
 # Handler::Karma
 requires 'DB_File';
