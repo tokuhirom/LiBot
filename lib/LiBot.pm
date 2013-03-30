@@ -89,11 +89,11 @@ LiBot - The bot framework
 
 =head1 DESCRIPTION
 
-This is yet another bot framework.
+This is yet another bot framework. Please look L<libot.pl>
 
 =head1 MOTIVATION
 
-I need a bot framework supports Lingr.
+I need a bot framework supports Lingr and IRC.
 
 =head1 AUTHOR
 

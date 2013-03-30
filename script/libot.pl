@@ -59,7 +59,7 @@ You can create your own plugins very easily.
 
 =head1 CONFIGURATION
 
-Here is a example configuration file:
+Here is a example configuration file for lingr bot:
 
     +{
         providers => [
@@ -83,3 +83,26 @@ Here is a example configuration file:
         ],
     };
 
+And you can use IRC!
+
+    +{
+        providers => [
+            'IRC' => {
+                server => 'chat.freenode.net',
+                port => 6667,
+            },
+        ],
+        'handlers' => [
+            Karma => {
+                path => 'karma.bdb',
+            },
+            'LLEval',
+            'IkachanForwarder' => {
+                url => 'http://127.0.0.1:4979',
+                channel => '#hiratara',
+            },
+            'PerldocJP',
+            'URLFetcher',
+            'CoreList',
+        ],
+    };
