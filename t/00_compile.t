@@ -1,14 +1,17 @@
 use strict;
 use warnings;
-use utf8;
+use lib 'lib';
 use Test::More;
-use Test::AllModules;
-
-all_ok(
-    search_path => 'LiBot',
-    check       => sub {
-        my $class = shift;
-        eval "use $class;1;";
+use File::Find;
+ 
+find {
+    wanted => sub {
+        return unless /\.pm$/;
+        my $class = substr $_, length($File::Find::topdir) + 1;        $class =~ s/\.pm$//;
+        $class =~ s!/!::!g;
+        use_ok $class;
     },
-);
-
+    no_chdir => 1,
+}, 'lib';
+ 
+done_testing;
