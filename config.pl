@@ -7,7 +7,7 @@
     ],
     'handlers' => [
         Karma => {
-            path => 'karma.db',
+            path => 'karma.bdb',
         },
         'LLEval',
         'IkachanForwarder' => {

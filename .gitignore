@@ -5,3 +5,4 @@ karma.db
 /Build
 !Build/
 !META.json
+karma.bdb
