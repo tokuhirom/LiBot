@@ -58,7 +58,7 @@ sub _connect {
             my ( $irc, $channel, $msg ) = @_;
             my $text = decode( $self->encoding, $msg->{params}->[1] );
             my ( $nickname, ) = split '!', ( $msg->{prefix} || '' );
-            my $msg = LiBot::Message->new(
+            my $message = LiBot::Message->new(
                 text     => $text,
                 nickname => $nickname,
             );
@@ -70,7 +70,7 @@ sub _connect {
                             $irc->send_chan( $channel, "NOTICE", $channel, encode($self->encoding, $_) );
                         }
                     },
-                    $msg
+                    $message
                 );
             };
             if ($@) {
