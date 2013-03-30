@@ -5,7 +5,7 @@ use Test::More;
 use LiBot::Test::Handler;
 
 load_plugin(
-    'Handler' => 'Corelist' => {
+    'Handler' => 'CoreList' => {
     }
 );
 

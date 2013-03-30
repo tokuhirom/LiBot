@@ -11,4 +11,27 @@ has nickname => (is => 'ro', isa => 'Str', required => 1);
 no Mouse;
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Message - The message object
+
+=head1 DESCRIPTION
+
+This is a message object for LiBot.
+
+=head1 ACCESORS
+
+=over 4
+
+=item text
+
+Message text
+
+=item nickname
+
+Message owner's name.
+
+=back
 

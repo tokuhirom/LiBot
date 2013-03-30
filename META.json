@@ -14,10 +14,25 @@
    },
    "name" : "LiBot",
    "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "CPAN::Meta" : "0",
+            "Module::Build" : "0.38"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Pod::Wordlist::hanekomu" : "0",
+            "Test::CPAN::Meta" : "0",
+            "Test::MinimumVersion" : "0.10108",
+            "Test::Pod" : "1.41",
+            "Test::Spelling" : "0"
+         }
+      },
       "runtime" : {
          "requires" : {
+            "DB_File" : "0",
             "Data::OptList" : "0",
-            "GDBM_File" : "0",
             "HTML::Entities" : "0",
             "HTTP::Response::Encoding" : "0",
             "JSON" : "0",
