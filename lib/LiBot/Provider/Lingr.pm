@@ -30,7 +30,7 @@ sub handle_request {
 
     return sub {
         my $respond = shift;
-        my $cb = sub {
+        my $callback = sub {
             my $ret = shift;
             $ret =~ s!\n+$!!;
             $respond->([200, ['Content-Type' => 'text/plain'], [encode_utf8($ret || '')]]);
@@ -42,7 +42,7 @@ sub handle_request {
                     nickname => $event->{message}->{nickname},
                 );
                 my $proceeded = eval {
-                    $bot->handle_message($msg)
+                    $bot->handle_message($callback, $msg)
                 };
                 if ($@) {
                     print STDERR $@;
