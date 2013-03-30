@@ -4,11 +4,11 @@ LiBot - The bot framework
 
 # DESCRIPTION
 
-This is yet another bot framework.
+This is yet another bot framework. Please look [libot.pl](http://search.cpan.org/perldoc?libot.pl)
 
 # MOTIVATION
 
-I need a bot framework supports Lingr.
+I need a bot framework supports Lingr and IRC.
 
 # AUTHOR
 

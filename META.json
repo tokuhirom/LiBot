@@ -39,7 +39,8 @@
             "Log::Pony" : "0",
             "Mouse" : "0",
             "Pod::PerldocJp" : "0",
-            "Text::Shorten" : "0"
+            "Text::Shorten" : "0",
+            "perl" : "5.010000"
          }
       },
       "test" : {
@@ -60,5 +61,5 @@
          "web" : "https://github.com/tokuhirom/LiBot"
       }
    },
-   "version" : "0.0.1"
+   "version" : "v0.0.1"
 }

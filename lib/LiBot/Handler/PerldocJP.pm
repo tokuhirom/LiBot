@@ -97,6 +97,8 @@ sub init {
 1;
 __END__
 
+=encoding utf-8
+
 =head1 NAME
 
 LiBot::Handler::PerldocJP - Tell me link for perldoc.jp

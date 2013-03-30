@@ -21,7 +21,7 @@ LiBot::Message - The message object
 
 This is a message object for LiBot.
 
-=head1 ACCESORS
+=head1 ACCESSORS
 
 =over 4
 

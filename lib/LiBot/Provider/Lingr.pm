@@ -96,6 +96,8 @@ sub run {
 1;
 __END__
 
+=encoding utf-8
+
 =head1 NAME
 
 LiBot::Provider::Lingr - Lingr provider for LiBot
@@ -127,7 +129,8 @@ You can connect LiBot with Lingr.
 
 Bind host name in string. Required.
 
-=head1 port
+=item port
 
 Listen port number in Int. Required.
 
+=back

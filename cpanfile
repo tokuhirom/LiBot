@@ -1,3 +1,4 @@
+requires perl => '5.010000';
 requires 'Pod::PerldocJp';
 requires 'Text::Shorten';
 requires 'JSON';

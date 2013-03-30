@@ -74,7 +74,7 @@ LiBot::Handler::URLFetcher - URL title fetcher
 
 =head1 DESCRIPTION
 
-This bot tell me a C<< <title> >> from the url.
+This bot tell me a C<< <title> >> from the URL.
 
 =head1 CONFIGURATION
 
