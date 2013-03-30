@@ -53,4 +53,30 @@ sub init {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Handler::URLFetcher - URL title fetcher
+
+=head1 SYNOPSIS
+
+    # config.pl
+    +{
+        'handlers' => [
+            'URLFetcher'
+        ]
+    }
+
+    # script
+    <tokuhirom> http://www.quora.com/
+    >bot< Title: Quora
+
+=head1 DESCRIPTION
+
+This bot tell me a C<< <title> >> from the url.
+
+=head1 CONFIGURATION
+
+There is no configuration parameters.
 

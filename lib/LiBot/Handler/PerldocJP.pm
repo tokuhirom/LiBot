@@ -95,4 +95,34 @@ sub init {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Handler::PerldocJP - Tell me link for perldoc.jp
+
+=head1 SYNOPSIS
+
+    # config.pl
+    +{
+        'handlers' => [
+            'PerldocJP'
+        ]
+    }
+
+    # script
+    <hsegawa> perldoc perlre
+    >bot< perlre - Perl 正規表現
+    >bot< このページでは Perl での正規表現の構文について説明します。
+    >bot< もしこれまでに正規表現を使ったことがないのであれば、 perlrequick にクイ
+    >bot< ックスタ...
+    >bot< http://perldoc.jp/perlre
+
+=head1 DESCRIPTION
+
+This bot tell me a link for perldoc.jp.
+
+=head1 CONFIGURATION
+
+There is no configuration parameters.
 

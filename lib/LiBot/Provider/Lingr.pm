@@ -23,6 +23,7 @@ use Encode qw(encode_utf8 decode_utf8);
 use Twiggy::Server;
 use Plack::Builder;
 use Module::Runtime;
+
 use LiBot::Message;
 
 sub handle_request {
@@ -91,5 +92,42 @@ sub run {
     });
     return $server;
 }
+
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Provider::Lingr - Lingr provider for LiBot
+
+=head1 SYNOPSIS
+
+    # Your config.pl
+    +{
+        providers => [
+            'Lingr' => {
+                host => '127.0.0.1',
+                port => 1199,
+            },
+        ],
+        'handlers' => [
+            ...
+        ],
+    };
+
+=head1 DESCRIPTION
+
+You can connect LiBot with Lingr.
+
+=head1 CONFIGURATION
+
+=over 4
+
+=item host
+
+Bind host name in string. Required.
+
+=head1 port
+
+Listen port number in Int. Required.
 

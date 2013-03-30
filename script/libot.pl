@@ -8,11 +8,15 @@ use LiBot;
 use Getopt::Long;
 use AE;
 use Data::OptList;
+use Pod::Usage;
 
 my $config_file = 'config.pl';
+my $help;
 GetOptions(
     'c=s' => \$config_file,
-) or die;
+    'h|help' => \$help,
+) or pod2usage(1);
+pod2usage(1) if $help;
 
 my $bot = setup_bot();
 my $server = $bot->run();
@@ -36,4 +40,46 @@ sub setup_bot {
 
     $bot;
 }
+
+__END__
+
+=head1 NAME
+
+libot.pl - The bot framework
+
+=head1 SYNOPSIS
+
+    % libot.pl -c config.pl
+
+=head1 DESCRIPTION
+
+LiBot is a pluggable lingr bot framework.
+
+You can create your own plugins very easily.
+
+=head1 CONFIGURATION
+
+Here is a example configuration file:
+
+    +{
+        providers => [
+            'Lingr' => {
+                host => '127.0.0.1',
+                port => 1199,
+            },
+        ],
+        'handlers' => [
+            Karma => {
+                path => 'karma.bdb',
+            },
+            'LLEval',
+            'IkachanForwarder' => {
+                url => 'http://127.0.0.1:4979',
+                channel => '#hiratara',
+            },
+            'PerldocJP',
+            'URLFetcher',
+            'CoreList',
+        ],
+    };
 
