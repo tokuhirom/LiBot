@@ -5,6 +5,7 @@ use utf8;
 
 our $VERSION = '0.0.1';
 
+use LiBot::Message;
 use Log::Pony;
 
 use Mouse;
@@ -58,6 +59,19 @@ sub load_plugin {
     $obj;
 }
 
+sub handle_message {
+    my ($self, $callback, $msg) = @_;
+
+    for my $handler (@{$self->{handlers}}) {
+        if (my @matched = ($msg->text =~ $handler->[0])) {
+            $handler->[1]->($callback, $msg, @matched);
+            # Handled well
+            return 1;
+        }
+    }
+    return 0; # Does not handled.
+}
+
 sub run {
     my $self = shift;
 
@@ -67,3 +81,25 @@ sub run {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot - The bot framework
+
+=head1 DESCRIPTION
+
+This is yet another bot framework.
+
+=head1 AUTHOR
+
+Tokuhiro Matsuno E<lt> tokuhirom @ gmail.com E<gt>
+
+=head1 LICENSE
+
+Copyright (C) Tokuhiro Matsuno
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 
-use lib 'lib';
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use LiBot;
 use Getopt::Long;
 use AE;
