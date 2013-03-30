@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 
-our $VERSION = '0.0.1';
+use version; our $VERSION = version->declare("v0.0.1");
 
 use LiBot::Message;
 use Log::Pony;
