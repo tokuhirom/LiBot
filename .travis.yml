@@ -1,3 +1,6 @@
 language: perl
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libdb-dev
 perl:
   - "5.16"
