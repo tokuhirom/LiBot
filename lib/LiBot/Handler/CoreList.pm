@@ -1,4 +1,4 @@
-package LiBot::Handler::Corelist;
+package LiBot::Handler::CoreList;
 use strict;
 use warnings;
 use utf8;
@@ -30,9 +30,16 @@ __END__
 
 =head1 NAME
 
-LiBot::Handler::Corelist - Module::CoreList plugin
+LiBot::Handler::CoreList - Module::CoreList plugin
 
 =head1 SYNOPSIS
+
+    # config.pl
+    +{
+        'handlers' => [
+            'CoreList'
+        ]
+    }
 
     # In the chat
     <tokuhirom> corelist Test::More
@@ -44,3 +51,6 @@ LiBot::Handler::Corelist - Module::CoreList plugin
 
 This plugin provides a 'corelist' command for the LiBot.
 
+=head1 CONFIGURATION
+
+There is no configuration parameters.

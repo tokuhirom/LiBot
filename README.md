@@ -6,6 +6,10 @@ LiBot - The bot framework
 
 This is yet another bot framework.
 
+# MOTIVATION
+
+I need a bot framework supports Lingr.
+
 # AUTHOR
 
 Tokuhiro Matsuno < tokuhirom @ gmail.com >

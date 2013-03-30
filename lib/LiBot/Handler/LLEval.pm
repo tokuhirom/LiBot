@@ -48,4 +48,32 @@ sub init {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Handler::LLEval - lleval gateway
+
+=head1 SYNOPSIS
+
+    # config.pl
+    +{
+        'handlers' => [
+            'LLEval'
+        ]
+    }
+
+    # script
+    <hsegawa> !3+2
+    >bot< 5
+    <hsegawa> !!rb 1.upto(3) {|i| print i }
+    >bot< 1 2 3
+
+=head1 DESCRIPTION
+
+This is a gateway for L<lleval|colabv6.dan.co.jp/lleval.html>.
+
+=head1 CONFIGURATION
+
+There is no configuration parameters.
 

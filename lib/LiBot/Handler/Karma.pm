@@ -2,8 +2,9 @@ package LiBot::Handler::Karma;
 use strict;
 use warnings;
 use utf8;
-use Mouse;
 use DB_File;
+
+use Mouse;
 
 has path => (
     is => 'ro',
@@ -41,4 +42,42 @@ sub init {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+LiBot::Handler::Karma - Karma bot
+
+=head1 SYNOPSIS
+
+    # config.pl
+    +{
+        'handlers' => [
+            'Karma' => {
+                path => 'path/to/database.db',
+            }
+        ]
+    }
+
+    # script
+    <hsegawa> gfx--
+    >bot< gfx: -1
+
+=head1 DESCRIPTION
+
+This is a karma bot.
+
+=head1 CONFIGURATION
+
+=over 4
+
+=item path
+
+Path to database file. Required.
+
+=back
+
+=head1 DEPENDENCIES
+
+L<DB_File>
 
