@@ -1,13 +1,30 @@
 requires perl => '5.010000';
-requires 'Pod::PerldocJp';
+
+# Common
 requires 'Text::Shorten';
 requires 'JSON';
+requires 'Module::Runtime';
 requires 'Data::OptList';
 requires 'Mouse';
 requires 'Log::Pony';
+
+# Provider::IRC
+requires 'AnyEvent::IRC::Client';
+
+# Provider::Lingr
+requires 'Plack';
+requires 'Twiggy';
+
+# Handler::URLFetcher
+requires 'Furl';
 requires 'HTTP::Response::Encoding';
 requires 'HTML::Entities';
-requires 'AnyEvent::IRC::Client';
+
+# Handler::LLEval
+requires 'URI::Escape';
+
+# Handler::PerldocJP
+requires 'Pod::PerldocJp';
 
 # Handler::Karma
 requires 'DB_File';
