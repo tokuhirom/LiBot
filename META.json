@@ -34,13 +34,18 @@
             "AnyEvent::IRC::Client" : "0",
             "DB_File" : "0",
             "Data::OptList" : "0",
+            "Furl" : "0",
             "HTML::Entities" : "0",
             "HTTP::Response::Encoding" : "0",
             "JSON" : "0",
             "Log::Pony" : "0",
+            "Module::Runtime" : "0",
             "Mouse" : "0",
+            "Plack" : "0",
             "Pod::PerldocJp" : "0",
             "Text::Shorten" : "0",
+            "Twiggy" : "0",
+            "URI::Escape" : "0",
             "perl" : "5.010000"
          }
       },
@@ -62,5 +67,9 @@
          "web" : "https://github.com/tokuhirom/LiBot"
       }
    },
-   "version" : "v0.0.1"
+   "version" : "v0.0.2",
+   "x_contributors" : [
+      "mattn <mattn.jp@gmail.com>",
+      "tokuhirom <tokuhirom@gmail.com>"
+   ]
 }
