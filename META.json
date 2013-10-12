@@ -79,7 +79,7 @@
          "web" : "https://github.com/tokuhirom/LiBot"
       }
    },
-   "version" : "v0.0.2",
+   "version" : "v0.0.3",
    "x_contributors" : [
       "mattn <mattn.jp@gmail.com>",
       "tokuhirom <tokuhirom@gmail.com>"

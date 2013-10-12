@@ -50,6 +50,8 @@ sub init {
 1;
 __END__
 
+=for stopwords lleval
+
 =head1 NAME
 
 LiBot::Handler::LLEval - lleval gateway

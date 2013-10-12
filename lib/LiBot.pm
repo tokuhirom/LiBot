@@ -5,7 +5,7 @@ use utf8;
 
 use 5.010000;
 
-use version; our $VERSION = version->declare("v0.0.2");
+use version; our $VERSION = version->declare("v0.0.3");
 
 use LiBot::Message;
 use Log::Pony;

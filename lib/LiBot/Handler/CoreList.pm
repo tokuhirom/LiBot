@@ -28,6 +28,8 @@ sub _handler {
 1;
 __END__
 
+=for stopwords corelist
+
 =head1 NAME
 
 LiBot::Handler::CoreList - Module::CoreList plugin

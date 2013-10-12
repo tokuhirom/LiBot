@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+v0.0.3 2013-10-12T02:28:36Z
+
+    - Fixed packaging issue.
+
 v0.0.2 2013-04-01T01:38:42Z
 
     - Fixed deps
