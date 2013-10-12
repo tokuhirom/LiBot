@@ -4,7 +4,7 @@
       "Tokuhiro Matsuno < tokuhirom @ gmail.com >"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.0.49, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Minilla/v0.7.5, CPAN::Meta::Converter version 2.132510",
    "license" : [
       "perl_5"
    ],
@@ -13,20 +13,32 @@
       "version" : "2"
    },
    "name" : "LiBot",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples",
+         "author",
+         "builder"
+      ]
+   },
    "prereqs" : {
       "configure" : {
          "requires" : {
             "CPAN::Meta" : "0",
+            "CPAN::Meta::Prereqs" : "0",
             "Module::Build" : "0.38"
          }
       },
       "develop" : {
          "requires" : {
-            "Pod::Wordlist::hanekomu" : "0",
             "Test::CPAN::Meta" : "0",
             "Test::MinimumVersion" : "0.10108",
             "Test::Pod" : "1.41",
-            "Test::Spelling" : "0"
+            "Test::Spellunker" : "v0.2.7"
          }
       },
       "runtime" : {

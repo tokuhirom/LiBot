@@ -6,3 +6,4 @@ karma.db
 !Build/
 !META.json
 karma.bdb
+!LICENSE
